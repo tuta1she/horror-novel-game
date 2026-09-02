@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Десятеро молчаливых — визуальная новелла</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===========================================================
+       ОБЁРТКА ВСЕЙ ИГРЫ
+       Внутри неё живут: слой фона, HUD (рассудок/подозрение),
+       диалоговое окно, экран выборов, экран стартового меню
+       и оверлеи (виньетка + шум) поверх всего.
+       =========================================================== -->
+  <div id="game-root">
+
+    <!-- Слой фона: сюда движок подставляет CSS-класс по значению
+         поля background текущей сцены (см. applyBackground в script.js) -->
+    <div id="bg-layer" class="bg-default"></div>
+
+    <!-- Декоративные атмосферные оверлеи: виньетка + зерно (шум).
+         Чисто CSS/SVG, ничего не грузится извне. -->
+    <div id="vignette-overlay"></div>
+    <div id="grain-overlay"></div>
+
+    <!-- Оверлей резкой цветовой вспышки для "жутких" моментов —
+         управляется через effects.flashColor в data.js (см. script.js). -->
+    <div id="flash-overlay"></div>
+
+    <!-- ============ ГЛАВНОЕ МЕНЮ (стартовый экран) ============ -->
+    <section id="main-menu" class="screen">
+      <h1 class="game-title">ДЕСЯТЕРО МОЛЧАЛИВЫХ</h1>
+      <p class="game-subtitle">хоррор-детектив</p>
+      <div class="menu-buttons">
+        <button id="btn-new-game" class="menu-btn">Новая игра</button>
+        <button id="btn-continue" class="menu-btn" disabled>Продолжить</button>
+      </div>
+      <p class="menu-hint">Сохранение происходит автоматически после каждого выбора.</p>
+    </section>
+
+    <!-- ============ ИГРОВОЙ ЭКРАН ============ -->
+    <section id="game-screen" class="screen hidden">
+
+      <!-- HUD: индикаторы рассудка и подозрений -->
+      <div id="hud">
+        <div class="hud-stat">
+          <span class="hud-label">Рассудок</span>
+          <div class="hud-bar-track">
+            <div id="sanity-bar" class="hud-bar-fill sanity-fill"></div>
+          </div>
+        </div>
+        <div class="hud-stat">
+          <span class="hud-label">Подозрение</span>
+          <div class="hud-bar-track">
+            <div id="suspicion-bar" class="hud-bar-fill suspicion-fill"></div>
+          </div>
+        </div>
+        <button id="btn-restart" class="hud-restart-btn" title="Начать заново">⟲</button>
+      </div>
+
+      <!-- Блок окружения (текстовые "декорации" вместо картинки) -->
+      <div id="environment-box" class="hidden"></div>
+
+      <!-- Единая нижняя панель: текст диалога и варианты выбора идут
+           друг под другом в обычном потоке документа (не поверх друг
+           друга), а вся панель может прокручиваться, если контента
+           много и он не помещается по высоте. -->
+      <div id="dialogue-panel">
+        <div id="speaker-name" class="hidden"></div>
+        <div id="dialogue-text"></div>
+        <button id="btn-next" class="dialogue-next-btn hidden">Далее ▾</button>
+
+        <!-- Варианты выбора (до 4 кнопок) появляются НИЖЕ текста,
+             после того как игрок нажал "Далее" -->
+        <div id="choices-box" class="hidden"></div>
+
+        <!-- Блок головоломки с вводом текста (расшифровка записки и т.п.).
+             Показывается вместо choices-box, когда у сцены есть поле
+             puzzle. См. scene.puzzle в data.js и renderPuzzle() в script.js. -->
+        <div id="puzzle-box" class="hidden">
+          <p id="puzzle-prompt"></p>
+          <p id="puzzle-hint" class="hidden"></p>
+          <div class="puzzle-input-row">
+            <input type="text" id="puzzle-input" autocomplete="off" placeholder="Введите ответ...">
+            <button id="btn-puzzle-submit">Проверить</button>
+          </div>
+          <p id="puzzle-feedback" class="hidden"></p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ============ ЭКРАН ФИНАЛА / ПЕРЕЗАПУСКА ============ -->
+    <section id="end-screen" class="screen hidden">
+      <h2>Конец главы</h2>
+      <p id="end-screen-text"></p>
+      <button id="btn-restart-end" class="menu-btn">Начать заново</button>
+    </section>
+
+  </div>
+
+  <!-- Порядок подключения важен: сначала данные, потом логика -->
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
